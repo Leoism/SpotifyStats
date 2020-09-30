@@ -5,16 +5,11 @@ const cors = require('cors');
 const fetch = require('node-fetch');
 const request = require('request');
 const app = express();
-
+const queryString = require('query-string');
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(cors({
-  credentials: true
-}))
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/index.html');
-});
+app.use(cors());
 
 app.get('/login', (req, res) => {
   const scopes = 'user-read-email user-top-read';
@@ -44,27 +39,13 @@ app.get('/authenticate', (req, res) => {
   };
 
   request.post(authOpts, (error, response, body) => {
-    res.cookie('access_token', body.access_token, {
-      maxAge: 3600000,
-      sameSite: "strict",
+    const params = queryString.stringify({
+      access_token: body.access_token,
+      refresh_token: body.refresh_token
     });
-    res.cookie('refresh_token', body.refresh_token, {
-      maxAge: 3600000,
-      sameSite: "strict",
-    });
-    res.redirect('/myinfo');
-  });
-});
 
-app.get('/myinfo', async (req, res) => {
-  const json = await fetch('https://api.spotify.com/v1/me',
-    {
-      headers: {
-        Authorization: `Bearer ${req.cookies.access_token}`
-      }
-    })
-    .then((res) => res.json());
-  res.json(json);
+    res.redirect('http://localhost:3000/myinfo?' + params);
+  });
 });
 
 app.listen(8080);
