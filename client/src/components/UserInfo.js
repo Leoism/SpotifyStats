@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ArtistComponent from './Artist';
+import './UserInfo.css';
 
 class UserInfoComponent extends Component {
   componentDidMount() {
@@ -75,7 +76,7 @@ class UserInfoComponent extends Component {
         <div>
           <p>Hello {userInfo.display_name}</p>
           <img src={userInfo.images[0].url} />
-          <h4>Your Top Artists</h4>
+          <h4 id="titleAlign">Your Top Artists</h4>
           <div>
             {this.loadArtists(artists)}
           </div>

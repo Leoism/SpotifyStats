@@ -10,13 +10,13 @@ class ArtistComponent extends Component {
     const artistUrl = artist.external_urls.spotify;
     return (
       <Row>
-        <Col m={1} s={1} l={1} className="rank">
+        <Col m={1} s={2} l={1} className="rank">
           {this.props.rank}
         </Col>
         <Col m={2} s={4} l={2}><img className="artistImage" src={artistImage} /></Col>
-        <Col m={9} s={3} l={5} className="artistInfo">
+        <Col m={9} s={6} l={4} className="artistInfo">
           <div>{artistName}</div>
-          <div><a href={artistUrl}>Spotify Page</a></div>
+          <div className="spotifyPage"><a href={artistUrl}>Spotify Page</a></div>
         </Col>
       </Row>);
   }
