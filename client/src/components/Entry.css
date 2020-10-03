@@ -1,9 +1,9 @@
-.artistImage {
+.entryImage {
   width: 100px;
   height: 100px;
 }
 
-.artistInfo {
+.entryInfo {
   padding-top: 16px !important;
     font-size: 20px;
     font-weight: 600;
@@ -27,6 +27,6 @@
   height: 100px !important;
 }
 
-.spotifyPage {
+.entryUrlText {
   font-size: 16px;
 }

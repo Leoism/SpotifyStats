@@ -1,25 +1,18 @@
 import React, { Component } from 'react';
-import { Col, Row } from 'react-materialize';
-import './Artist.css';
+import Entry from './Entry';
 
-class ArtistComponent extends Component {
+class Artist extends Component {
   render() {
     const artist = this.props.artist;
-    const artistImage = artist.images[artist.images.length - 1].url;
-    const artistName = artist.name;
-    const artistUrl = artist.external_urls.spotify;
-    return (
-      <Row>
-        <Col m={1} s={2} l={1} className="rank">
-          {this.props.rank}
-        </Col>
-        <Col m={2} s={4} l={2}><img className="artistImage" src={artistImage} /></Col>
-        <Col m={9} s={6} l={4} className="artistInfo">
-          <div>{artistName}</div>
-          <div className="spotifyPage"><a href={artistUrl}>Spotify Page</a></div>
-        </Col>
-      </Row>);
+    const artistInfo = {
+      "image": artist.images[artist.images.length - 1].url,
+      "name": artist.name,
+      "rank": this.props.rank,
+      "url": artist.external_urls.spotify,
+      "urlText": "Spotify Page"
+    }
+    return (<Entry entry={artistInfo} />);
   }
 }
 
-export default ArtistComponent;
+export default Artist;
