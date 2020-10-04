@@ -3,8 +3,14 @@
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "mongodb": "^3.6.2",
+    "mysql": "^2.18.1",
     "node-fetch": "^2.6.1",
     "query-string": "^6.13.4",
     "request": "^2.88.2"
+  },
+  "devDependencies": {
+    "eslint": "^7.10.0",
+    "eslint-config-google": "^0.14.0"
   }
 }
