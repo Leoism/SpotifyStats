@@ -8,26 +8,26 @@ const queryString = require('query-string');
 const MongoClient = require('mongodb').MongoClient;
 const mongoUrl = 'mongodb://localhost:27017/spotify_stats';
 
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ extended: false }));
+app.use(express.json({limit: '50mb'}));
+app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
-app.use(cors({ origin: true }));
+app.use(cors({origin: true}));
 
 app.get('/login', (req, res) => {
   const scopes = 'user-read-email user-top-read';
-  const redirect_uri = 'http://localhost:8080/authenticate';
+  const redirectUri = 'http://localhost:8080/authenticate';
   res.redirect('https://accounts.spotify.com/authorize' +
     '?response_type=code' +
     '&client_id=' + keys.spotify_client_id +
     '&scope=' + encodeURIComponent(scopes) +
-    '&redirect_uri=' + encodeURIComponent(redirect_uri));
+    '&redirect_uri=' + encodeURIComponent(redirectUri));
 });
 
 app.get('/authenticate', (req, res) => {
   const form = {
     grant_type: 'authorization_code',
     code: req.query.code,
-    redirect_uri: 'http://localhost:8080/authenticate'
+    redirect_uri: 'http://localhost:8080/authenticate',
   };
 
   const authOpts = {
@@ -43,7 +43,7 @@ app.get('/authenticate', (req, res) => {
   request.post(authOpts, (error, response, body) => {
     const params = queryString.stringify({
       access_token: body.access_token,
-      refresh_token: body.refresh_token
+      refresh_token: body.refresh_token,
     });
 
     res.redirect('http://localhost:3000/myinfo?' + params);
@@ -68,15 +68,15 @@ app.get('/user-stats', async (req, res) => {
   MongoClient.connect(mongoUrl, (err, db) => {
     if (err) throw err;
     const dbo = db.db('spotify_stats');
-    let username = req.query.username;
-    let type = req.query.type;
-    let term = req.query.term;
-    dbo.collection('users').findOne({ "_id": req.query.username })
-      .then((response) => {
-        let stats = response[username][type][term];
-        res.json(stats);
-        db.close();
-      });
+    const username = req.query.username;
+    const type = req.query.type;
+    const term = req.query.term;
+    dbo.collection('users').findOne({'_id': req.query.username})
+        .then((response) => {
+          const stats = response[username][type][term];
+          res.json(stats);
+          db.close();
+        });
   });
 });
 

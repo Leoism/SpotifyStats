@@ -1,9 +1,12 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import Artist from './Artist';
 import Track from './Track';
-import { gatherUserData, getUserStatsFromDb } from '../database/databaseRetrieval';
+import {gatherUserData, getUserStatsFromDb} from '../database/databaseRetrieval';
 import './UserInfo.css';
 
+/**
+ * Displays the Users top artists and tracks, short term by default.
+ */
 class UserInfoComponent extends Component {
   async componentDidMount() {
     const search = window.location.search;
@@ -14,9 +17,9 @@ class UserInfoComponent extends Component {
     if (access_token) {
       const refresh_token = params.get('refresh_token');
       document.cookie = `access_token=${access_token};refresh_token=${refresh_token}`;
-      state = { loggedIn: true, access_token };
+      state = {loggedIn: true, access_token};
     } else {
-      this.setState({ loggedIn: false });
+      this.setState({loggedIn: false});
       return;
     }
 
@@ -30,8 +33,13 @@ class UserInfoComponent extends Component {
     this.setState(state);
   }
 
+  /**
+   * Creates Artist components of all the users artists.
+   * @param {Array} userTopArtists - an array of the users top artists.
+   * @return {Array} an array of Artist components.
+   */
   loadArtists(userTopArtists) {
-    let artists = [];
+    const artists = [];
     let rank = 1;
     for (const artist of userTopArtists) {
       artists.push(<Artist artist={artist} rank={rank++} />);
@@ -39,11 +47,16 @@ class UserInfoComponent extends Component {
     return artists;
   }
 
+  /**
+   * Creates Tracks components of all the users tracks.
+   * @param {Array} userTopTracks - an array of the users top tracks.
+   * @return {Array} an array of Tracks components.
+   */
   loadTracks(userTopTracks) {
-    let tracks = [];
+    const tracks = [];
     let rank = 1;
     for (const track of userTopTracks) {
-      tracks.push(<Track track={track} rank={rank++} />)
+      tracks.push(<Track track={track} rank={rank++} />);
     }
     return tracks;
   }
