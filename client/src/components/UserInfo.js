@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import Artist from './Artist';
 import Track from './Track';
+import Term from './Term';
 import {gatherUserData, getUserStatsFromDb} from '../database/databaseRetrieval';
 import './UserInfo.css';
 
@@ -31,6 +32,24 @@ class UserInfoComponent extends Component {
 
     state.user = userStats;
     this.setState(state);
+  }
+  
+  updateTopEntries(type, entries) {
+    if (type === 'artists') {
+      this.setState({
+        user: {
+          artists: [...entries],
+          tracks: [...this.state.user.tracks],
+        },
+      });
+    } else if(type === 'tracks') {
+      this.setState({
+        user: {
+          artists: [...this.state.user.artists],
+          tracks: [...entries],
+        },
+      });
+    }
   }
 
   /**
@@ -70,11 +89,17 @@ class UserInfoComponent extends Component {
     if (state && JSON.stringify(state.user) !== '{}') {
       return (
         <div>
-          <h4 id="titleAlign">Your Top Artists</h4>
+          <div class="titleAlign">
+            <h4 class="title">Your Top Artists</h4>
+            <Term type={"artists"} updater={this.updateTopEntries.bind(this)}/>
+          </div>
           <div>
             {this.loadArtists(state.user.artists)}
           </div>
-          <h4 id="titleAlign">Your Top Tracks</h4>
+          <div class="titleAlign">
+            <h4 class="title">Your Top Tracks</h4>
+            <Term type={"tracks"} updater={this.updateTopEntries.bind(this)}/>
+          </div>
           <div>
             {this.loadTracks(state.user.tracks)}
           </div>

@@ -72,4 +72,9 @@ async function getSpotifyUrl(url, access_token) {
     .then((res) => res.json());
 }
 
-module.exports = { getUserStatsFromDb, gatherUserData };
+module.exports = {
+  getUserStatsFromDb,
+  gatherUserData,
+  getUserEntry,
+  getCookieValue
+};
