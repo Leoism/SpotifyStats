@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {Col, Row} from 'react-materialize';
+import React, { Component } from 'react';
+import { Col, Row } from 'react-materialize';
 import './Entry.css';
 
 /**
@@ -16,8 +16,8 @@ class Entry extends Component {
         </Col>
         <Col m={2} s={4} l={2}>
           <img className="entryImage"
-               src={entry.image}
-               alt=""/>
+            src={entry.image}
+            alt="" />
         </Col>
         <Col m={9} s={6} l={4} className="entryInfo">
           <div>{entry.name}</div>
