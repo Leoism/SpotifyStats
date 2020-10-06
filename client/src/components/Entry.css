@@ -26,6 +26,10 @@
   height: 100px !important;
 }
 
+.row .col {
+  height: 100px !important;
+}
+
 .entryUrlText {
   font-size: 16px;
 }
