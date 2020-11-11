@@ -3,8 +3,18 @@ async function getSpotifyUserResults(url, user, userId, type, term, access_token
     if (!user[userId][type]) {
       user[userId][type] = {};
     }
-    user[userId][type][term] = [];
-    user[userId][type][term].push(...results.items);
+    const typeArr = user[userId][type]
+    typeArr[term] = [];
+    let rank = 1;
+    if (type == 'artists') {
+      for (const artist of results.items) {
+        typeArr[term].push(convertToArtistObject(artist, rank++))
+      }
+    } else {
+      for (const song of results.items) {
+        typeArr[term].push(convertToSongObject(song, rank++));
+      }
+    }
   });
 }
 
@@ -14,7 +24,13 @@ async function gatherUserData(user, access_token) {
   let userId;
   await getSpotifyUrl(url, access_token)
     .then((fetchedInfo) => {
-      user[fetchedInfo.id] = fetchedInfo;
+      user[fetchedInfo.id] = {
+        userInfo: {
+          username: fetchedInfo.display_name,
+          url: fetchedInfo.href,
+          image: fetchedInfo.images[fetchedInfo.images.length - 1].url,
+        }
+      };
       userId = fetchedInfo.id;
       document.cookie = `user=${userId}`;
     });
@@ -70,6 +86,27 @@ async function getSpotifyUrl(url, access_token) {
       }
     })
     .then((res) => res.json());
+}
+
+function convertToSongObject(song, rank) {
+  return {
+    album: song.album.name,
+    image: song.album.images[0].url,
+    name: song.name,
+    url: song.href,
+    rank,
+    prevRank: -1
+  }
+}
+
+function convertToArtistObject(artist, rank) {
+  return {
+    name: artist.name,
+    image: artist.images[0].url,
+    url: artist.href,
+    rank,
+    prevRank: -1
+  }
 }
 
 export {

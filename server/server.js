@@ -8,10 +8,10 @@ const queryString = require('query-string');
 const MongoClient = require('mongodb').MongoClient;
 const mongoUrl = 'mongodb://localhost:27017/spotify_stats';
 
-app.use(express.json({limit: '50mb'}));
-app.use(express.urlencoded({extended: false}));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(cors({origin: true}));
+app.use(cors({ origin: true }));
 
 app.get('/login', (req, res) => {
   const scopes = 'user-read-email user-top-read';
@@ -56,7 +56,7 @@ app.post('/user-stats', (req, res) => {
     if (err) throw err;
     const dbo = db.db('spotify_stats');
     dbo.collection('users').insertOne(user, (err, res) => {
-      if (err.code === 11000) {
+      if (err && err.code === 11000) {
         return;
       } else if (err) throw err;
       db.close();
@@ -71,12 +71,12 @@ app.get('/user-stats', async (req, res) => {
     const username = req.query.username;
     const type = req.query.type;
     const term = req.query.term;
-    dbo.collection('users').findOne({'_id': req.query.username})
-        .then((response) => {
-          const stats = response[username][type][term];
-          res.json(stats);
-          db.close();
-        });
+    dbo.collection('users').findOne({ '_id': req.query.username })
+      .then((response) => {
+        const stats = response[username][type][term];
+        res.json(stats);
+        db.close();
+      });
   });
 });
 

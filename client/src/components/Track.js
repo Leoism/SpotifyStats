@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import Entry from './Entry';
 
 /**
@@ -9,11 +9,11 @@ class Track extends Component {
   render() {
     const track = this.props.track;
     const trackInfo = {
-      'image': track.album.images[track.album.images.length - 1].url,
-      'name': track.name,
-      'rank': this.props.rank,
-      'url': track.external_urls.spotify,
-      'urlText': 'Play Song',
+      image: track.image,
+      name: track.name,
+      rank: track.rank,
+      url: track.url,
+      urlText: 'Play Song',
     };
 
     return (<Entry entry={trackInfo} />);
