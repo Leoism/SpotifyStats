@@ -1,9 +1,9 @@
-async function getSpotifyUserResults(url, user, userId, type, term, access_token) {
+async function getSpotifyUserResults(url, user, type, term, access_token) {
   return await getSpotifyUrl(url, access_token).then((results) => {
-    if (!user[userId][type]) {
-      user[userId][type] = {};
+    if (!user.user[type]) {
+      user.user[type] = {};
     }
-    const typeArr = user[userId][type]
+    const typeArr = user.user[type]
     typeArr[term] = [];
     let rank = 1;
     if (type == 'artists') {
@@ -18,18 +18,19 @@ async function getSpotifyUserResults(url, user, userId, type, term, access_token
   });
 }
 
-async function gatherUserData(user, access_token) {
+async function gatherUserData(user, access_token, refresh_token) {
   // fetch the user data first
   let url = 'https://api.spotify.com/v1/me';
   let userId;
   await getSpotifyUrl(url, access_token)
     .then((fetchedInfo) => {
-      user[fetchedInfo.id] = {
-        userInfo: {
+      user.user = {
+        info: {
           username: fetchedInfo.display_name,
           url: fetchedInfo.href,
           image: fetchedInfo.images[fetchedInfo.images.length - 1].url,
-        }
+        },
+        refresh_token,
       };
       userId = fetchedInfo.id;
       document.cookie = `user=${userId}`;
@@ -39,11 +40,11 @@ async function gatherUserData(user, access_token) {
   for (const term of terms) {
     // fetch top artists
     url = `https://api.spotify.com/v1/me/top/artists?time_range=${term}&limit=50`;
-    await getSpotifyUserResults(url, user, userId, 'artists', term, access_token);
+    await getSpotifyUserResults(url, user, 'artists', term, access_token);
 
     // fetch top tracks
     url = `https://api.spotify.com/v1/me/top/tracks?time_range=${term}&limit=50`;
-    await getSpotifyUserResults(url, user, userId, 'tracks', term, access_token);
+    await getSpotifyUserResults(url, user, 'tracks', term, access_token);
   }
   user._id = userId;
 
@@ -95,7 +96,6 @@ function convertToSongObject(song, rank) {
     name: song.name,
     url: song.href,
     rank,
-    prevRank: -1
   }
 }
 
@@ -105,13 +105,14 @@ function convertToArtistObject(artist, rank) {
     image: artist.images[0].url,
     url: artist.href,
     rank,
-    prevRank: -1
   }
 }
 
-export {
+module.exports = {
   getUserStatsFromDb,
   gatherUserData,
   getUserEntry,
-  getCookieValue
+  getCookieValue,
+  convertToArtistObject,
+  convertToSongObject,
 };

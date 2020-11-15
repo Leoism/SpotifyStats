@@ -1,8 +1,8 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import Artist from './Artist';
 import Track from './Track';
 import Term from './Term';
-import {gatherUserData, getUserStatsFromDb} from '../database/databaseRetrieval';
+import { gatherUserData, getUserStatsFromDb } from '../database/databaseRetrieval';
 import './UserInfo.css';
 
 /**
@@ -13,27 +13,27 @@ class UserInfoComponent extends Component {
     const search = window.location.search;
     const params = new URLSearchParams(search);
     const access_token = params.get('access_token');
+    const refresh_token = params.get('refresh_token');
 
     let state;
     if (access_token) {
-      const refresh_token = params.get('refresh_token');
       document.cookie = `access_token=${access_token};refresh_token=${refresh_token}`;
-      state = {loggedIn: true, access_token};
+      state = { loggedIn: true, access_token };
     } else {
-      this.setState({loggedIn: false});
+      this.setState({ loggedIn: false });
       return;
     }
 
     let userStats = await getUserStatsFromDb();
     if (userStats === undefined || userStats.artists === undefined || userStats.tracks === undefined) {
       userStats = {};
-      await gatherUserData(userStats, access_token);
+      await gatherUserData(userStats, access_token, refresh_token);
     }
 
     state.user = userStats;
     this.setState(state);
   }
-  
+
   updateTopEntries(type, entries) {
     if (type === 'artists') {
       this.setState({
@@ -42,7 +42,7 @@ class UserInfoComponent extends Component {
           tracks: [...this.state.user.tracks],
         },
       });
-    } else if(type === 'tracks') {
+    } else if (type === 'tracks') {
       this.setState({
         user: {
           artists: [...this.state.user.artists],
@@ -91,14 +91,14 @@ class UserInfoComponent extends Component {
         <div>
           <div class="titleAlign">
             <h4 class="title">Your Top Artists</h4>
-            <Term type={"artists"} updater={this.updateTopEntries.bind(this)}/>
+            <Term type={"artists"} updater={this.updateTopEntries.bind(this)} />
           </div>
           <div>
             {this.loadArtists(state.user.artists)}
           </div>
           <div class="titleAlign">
             <h4 class="title">Your Top Tracks</h4>
-            <Term type={"tracks"} updater={this.updateTopEntries.bind(this)}/>
+            <Term type={"tracks"} updater={this.updateTopEntries.bind(this)} />
           </div>
           <div>
             {this.loadTracks(state.user.tracks)}
